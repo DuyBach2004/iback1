@@ -87,14 +87,19 @@ Xin chào<b><span sec:authentication="principal.username" ></span></b>
                         <!--                    </form>-->
 
                     </button>
-                    <button class="btn btn-success" sec:authorize="hasAnyRole('ADMIN','MANAGER')" >
-                        <a th:href="@{/user/shoPageUpdate(id=${user.username})}" class="btn btn-sm " >
-                            Update
-                        </a>
-                    </button>
+<!--                    <button class="btn btn-success" sec:authorize="hasAnyRole('ADMIN','MANAGER')" >-->
+<!--                        <a th:href="@{/user/shoPageUpdate(id=${user.username})}" class="btn btn-sm " >-->
+<!--                            Update-->
+<!--                        </a>-->
+<!--                    </button>-->
                     <button class="btn btn-warning" sec:authorize="hasRole('ADMIN')" >
                         <a th:href="@{/khoa/showListKhoa-user(id=${user.username})}" class="btn btn-warning btn-sm " >
                             Choose Faculty
+                        </a>
+                    </button>
+                    <button class="btn btn-warning" sec:authorize="hasRole('ADMIN')" >
+                        <a th:href="@{/specialization/showListSpecialization-user(id=${user.username})}" class="btn btn-warning btn-sm " >
+                            Choose Specialzation
                         </a>
                     </button>
                     <button class="btn btn-warning" sec:authorize="hasRole('ADMIN')" >

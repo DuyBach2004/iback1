@@ -21,7 +21,7 @@ public class notebook {
     private classSchool classSchool;
     @Column(name = "teaching_day")
     private Date teachingDay;
-    @OneToMany(mappedBy = "notebook", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "notebook", cascade = CascadeType.REFRESH, orphanRemoval = true)
     private List<diem> diems;
 
 

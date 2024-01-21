@@ -12,7 +12,7 @@ public class subjects {
     private int numberOfCredits;
     @Column(name = "subject_name",length = 100)
     private String subjectName;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "specialized_name")
     private specialization maChuyenNghanh;
 

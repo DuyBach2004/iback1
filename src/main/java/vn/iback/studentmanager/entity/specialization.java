@@ -9,7 +9,7 @@ public class specialization {
     @Id
     @Column(name="specialized_code")
     private String specializedCode;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "ma_khoa")
     private khoa maKhoa;
     @Column(name = "specialized_name")

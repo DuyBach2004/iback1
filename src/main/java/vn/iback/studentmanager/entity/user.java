@@ -3,6 +3,7 @@ package vn.iback.studentmanager.entity;
 import jakarta.persistence.*;
 
 import java.sql.Blob;
+import java.sql.Date;
 import java.util.Collection;
 @Entity
 @Table(name = "user")
@@ -12,16 +13,16 @@ public class user {
     private String username;
     @Column(name="password", length = 256)
     private String password;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "student_id")
     private student studentId;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "parents_id")
     private parents parentsId;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "ma_khoa")
     private khoa khoa;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "ma_lop")
     private lop lop;
     @Column(name="firstname")
@@ -32,12 +33,12 @@ public class user {
     private String location;
     @Column(name="email")
     private String email;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "specialized_code")
     private specialization specialization;
     @Lob
     @Column(name="avatar")
-    private Blob avatar;
+    private String avatar;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinTable(
             name = "user_roles",
@@ -45,11 +46,19 @@ public class user {
             inverseJoinColumns = @JoinColumn(name ="roles_id")
     )
     private Collection<roles> roles;
+    @Column(name = "trang_thai_xac_thuc")
+    private boolean trangThaiXacThuc;
+    @Column(name = "maxacthuc")
+    private String maXacThuc;
+    @Column(name = "thoigianhieuluc")
+    private Date thoiGianHieuLucCuaMaXacThuc;
+
 
     public user() {
     }
 
-    public user(String username, String password, student studentId, parents parentsId, vn.iback.studentmanager.entity.khoa khoa, lop lop, String firstname, String lastname, String location, String email, vn.iback.studentmanager.entity.specialization specialization, Blob avatar, Collection<vn.iback.studentmanager.entity.roles> roles) {
+
+    public user(String username, String password, student studentId, parents parentsId, vn.iback.studentmanager.entity.khoa khoa, vn.iback.studentmanager.entity.lop lop, String firstname, String lastname, String location, String email, vn.iback.studentmanager.entity.specialization specialization, String avatar, Collection<vn.iback.studentmanager.entity.roles> roles, boolean trangThaiXacThuc, String maXacThuc, Date thoiGianHieuLucCuaMaXacThuc) {
         this.username = username;
         this.password = password;
         this.studentId = studentId;
@@ -63,6 +72,33 @@ public class user {
         this.specialization = specialization;
         this.avatar = avatar;
         this.roles = roles;
+        this.trangThaiXacThuc = trangThaiXacThuc;
+        this.maXacThuc = maXacThuc;
+        this.thoiGianHieuLucCuaMaXacThuc = thoiGianHieuLucCuaMaXacThuc;
+    }
+
+    public Date getThoiGianHieuLucCuaMaXacThuc() {
+        return thoiGianHieuLucCuaMaXacThuc;
+    }
+
+    public void setThoiGianHieuLucCuaMaXacThuc(Date thoiGianHieuLucCuaMaXacThuc) {
+        this.thoiGianHieuLucCuaMaXacThuc = thoiGianHieuLucCuaMaXacThuc;
+    }
+
+    public String getMaXacThuc() {
+        return maXacThuc;
+    }
+
+    public void setMaXacThuc(String maXacThuc) {
+        this.maXacThuc = maXacThuc;
+    }
+
+    public boolean isTrangThaiXacThuc() {
+        return trangThaiXacThuc;
+    }
+
+    public void setTrangThaiXacThuc(boolean trangThaiXacThuc) {
+        this.trangThaiXacThuc = trangThaiXacThuc;
     }
 
     public String getUsername() {
@@ -153,11 +189,11 @@ public class user {
         this.specialization = specialization;
     }
 
-    public Blob getAvatar() {
+    public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(Blob avatar) {
+    public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 

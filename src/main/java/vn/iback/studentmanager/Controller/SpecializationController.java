@@ -2,11 +2,13 @@ package vn.iback.studentmanager.Controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import vn.iback.studentmanager.entity.*;
+import vn.iback.studentmanager.service.Userservice;
 import vn.iback.studentmanager.service.classService;
 import vn.iback.studentmanager.service.khoaService.khoaService;
 import vn.iback.studentmanager.service.lopSevice.lopService;
@@ -23,13 +25,15 @@ public class SpecializationController {
     private subjectService subjectService;
     private lopService lopService;
     private classService classService;
+    private Userservice userservice;
     @Autowired
-    public SpecializationController(vn.iback.studentmanager.service.specializationService specializationService, vn.iback.studentmanager.service.khoaService.khoaService khoaService, vn.iback.studentmanager.service.subjectService subjectService, vn.iback.studentmanager.service.lopSevice.lopService lopService, vn.iback.studentmanager.service.classService classService) {
+    public SpecializationController(vn.iback.studentmanager.service.specializationService specializationService, vn.iback.studentmanager.service.khoaService.khoaService khoaService, vn.iback.studentmanager.service.subjectService subjectService, vn.iback.studentmanager.service.lopSevice.lopService lopService, vn.iback.studentmanager.service.classService classService, Userservice userservice) {
         this.specializationService = specializationService;
         this.khoaService = khoaService;
         this.subjectService = subjectService;
         this.lopService = lopService;
         this.classService = classService;
+        this.userservice = userservice;
     }
 
     @GetMapping("/showSpecialization")
@@ -54,7 +58,14 @@ public class SpecializationController {
         model.addAttribute("lop",lop);
         return "specialization/home";
     }
-
+    @GetMapping("/showListSpecialization-user")
+    public String showListSpecializationUser(@RequestParam("id") String username,Model model){
+        user user=userservice.findByUsername(username);
+        List<specialization> specializations=specializationService.findAllSpecialization();
+        model.addAttribute("specializations",specializations);
+        model.addAttribute("user",user);
+        return "specialization/home";
+    }
 
     @PostMapping("/update-khoa")
     public String updateKhoa(@RequestParam("id") String khoaId,@ModelAttribute("specialization") specialization specialization,Model model){

@@ -24,10 +24,10 @@ public class classSchool {
     private int soTiet;
     @Column(name = "phong_hoc")
     private String phongHoc;
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "staff_id")
     private staff homeroomTeacher;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "id")
     private kyHoc kyHoc;
 

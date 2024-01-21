@@ -18,12 +18,24 @@
 </head>
 <body>
 <div class="container" th:object="${user}">
+    <input type="hidden" th:field="*{username}" />
+    <input type="hidden" th:field="*{password}" />
+    <input type="hidden" th:field="*{roles}" />
+    <input type="hidden" th:field="*{studentId.studentId}" />
+    <input type="hidden" th:field="*{khoa}" />
+    <input type="hidden" th:field="*{lop}" />
+    <input type="hidden" th:field="*{firstname}" />
+    <input type="hidden" th:field="*{lastname}" />
+    <input type="hidden" th:field="*{location}" />
+    <input type="hidden" th:field="*{email}" />
+    <input type="hidden" th:field="*{specialization}" />
+    <input type="hidden" th:field="*{avatar}" />
     <div class="header">
-        <img th:src="@{/image/banner.png}"  alt="">
+        <a th:href="@{/homeUser}"> <img th:src="@{/image/banner.png}"  alt=""> </a>
     </div>
-    <div class="nav">
+    <div class="nav" th:if="${user.specialization != null}">
         <h2 class="nav-title">ĐĂNG KÍ HỌC PHẦN</h2>
-        <table class="nav-table__1">
+        <table class="nav-table__1"  >
             <thead class="nav-thead__1">
             <tr  class="nav-tr__1">
                 <th class="nav-th__1">Mã LHP</th>
@@ -42,16 +54,16 @@
                 <td class="nav-td__1"><span th:text="${class.idClass}"></span></td>
                 <td class="nav-td__1--mh"><span th:text="${class.subjects != null and class.subjects.getSubjectName() != null ? class.subjects.getSubjectName() : '' }"></span></td>
                 <td class="nav-td__1--gv"><span th:text="${class.homeroomTeacher != null and class.homeroomTeacher.getFullName() != null ? class.homeroomTeacher.getFullName() : '' }"></span></td>
-                <td class="nav-td__1"><span th:text="${class.schoolYear}"></span></td>
-                <td class="nav-td__1"><span th:text="${class.soTiet}"></span></td>
-                <td class="nav-td__1"><span th:text="${class.phongHoc}"></span></td>
+                <td class="nav-td__1"><span th:text="${class != null and class.schoolYear != null ? class.schoolYear : ''}"></span></td>
+                <td class="nav-td__1"><span th:text="${class != null and class.soTiet != null ? class.soTiet : '' }"></span></td>
+                <td class="nav-td__1"><span th:text="${class != null and class.phongHoc != null  ? class.phongHoc : '' }"></span></td>
                 <td class="nav-td__1"><span></span></td>
                 <td class="nav-td__1"><span th:text="${#lists.size(class.users) + '/' + 45}"></span></td>
                 <td class="nav-td__1">
                     <!-- <span class="nav-span__1-check">Đăng kí thành công</span> -->
 <!--                    <button class="nav-span__1-chec-dk">Đăng kí</button>-->
                     <button id="registerBtn" class="nav-span__1-chec-dk" sec:authorize="hasRole('USER')"  th:if="${class.users != null and not #lists.contains(class.users.![username], user.username) and #lists.size(class.users) < 45}">
-                        <a th:href="@{/class/studentEnroll(id=${class.idClass},username=${user.username})}" class="nav-a">
+                        <a th:href="@{/class-user/studentEnroll(id=${class.idClass},username=${user.username})}" class="nav-a">
                             Đăng kí
                         </a>
                     </button>
@@ -62,6 +74,8 @@
                         </a>
                     </span>
                 </td>
+
+
             </tr>
             </tbody>
         </table>
@@ -92,7 +106,7 @@
                 <td class="nav-td__1">
                     <!-- <span class="nav-span__1-check">Đăng kí thành công</span> -->
                     <button id="successBtn" class="nav-span__1-chec-huy" sec:authorize="hasRole('USER')" th:if="${notebook.staff.username eq user.username}">
-                        <a th:href="@{/notebook/studentCancel(id=${notebook.id},username=${user.username})}" class="nav-a">
+                        <a th:href="@{/notebook-user/studentCancel(id=${notebook.id},username=${user.username})}" class="nav-a">
                             Cancel
                         </a>
                     </button>
@@ -102,7 +116,9 @@
         </table>
 
     </div>
-
+    <h1 th:if="${user.specialization == null}" >
+        Hiện tại bạn chưa được xét duyệt chuyên nghành, hãy đợi khoa xác định chuyên nghành
+    </h1>
 </div>
 </body>
 </html>

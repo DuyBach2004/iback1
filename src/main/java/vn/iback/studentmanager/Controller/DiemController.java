@@ -1,19 +1,21 @@
 package vn.iback.studentmanager.Controller;
 
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import vn.iback.studentmanager.dto.DataMailDTO;
 import vn.iback.studentmanager.entity.*;
 import vn.iback.studentmanager.service.Userservice;
 import vn.iback.studentmanager.service.diemService.diemService;
 import vn.iback.studentmanager.service.ketQuaHocTapService.ketQuaHocTapService;
+import vn.iback.studentmanager.service.mailService.MailService;
 import vn.iback.studentmanager.service.nootebookService;
 import vn.iback.studentmanager.service.studentService;
+import vn.iback.studentmanager.utils.Const;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/diem")
@@ -23,14 +25,17 @@ public class DiemController {
     private Userservice userservice;
     private vn.iback.studentmanager.service.studentService studentService;
     private ketQuaHocTapService ketQuaHocTapService;
+    private MailService mailService;
     @Autowired
-    public DiemController(vn.iback.studentmanager.service.diemService.diemService diemService, vn.iback.studentmanager.service.nootebookService nootebookService, Userservice userservice, vn.iback.studentmanager.service.studentService studentService, vn.iback.studentmanager.service.ketQuaHocTapService.ketQuaHocTapService ketQuaHocTapService) {
+    public DiemController(vn.iback.studentmanager.service.diemService.diemService diemService, vn.iback.studentmanager.service.nootebookService nootebookService, Userservice userservice, vn.iback.studentmanager.service.studentService studentService, vn.iback.studentmanager.service.ketQuaHocTapService.ketQuaHocTapService ketQuaHocTapService, MailService mailService) {
         this.diemService = diemService;
         this.nootebookService = nootebookService;
         this.userservice = userservice;
         this.studentService = studentService;
         this.ketQuaHocTapService = ketQuaHocTapService;
+        this.mailService = mailService;
     }
+
     @GetMapping("/showPageDiemAdmin")
     public String showPageDiemAdmin(Model model){
         List<diem> diems=diemService.findAllDiem();
@@ -59,7 +64,8 @@ public class DiemController {
             }
 
         }
-//        model.addAttribute("diems",diems);
+        user user=userservice.findByUsername(username);
+        model.addAttribute("user",user);
 
         return "diem/home";
     }
@@ -74,6 +80,24 @@ public class DiemController {
         model.addAttribute("diem",diem);
         return "diem/update";
     }
+    @GetMapping("/sendmail")
+    public String sendMail(@ModelAttribute("user") user user,Model model) throws MessagingException {
+       try {
+           DataMailDTO dataMailDTO=new DataMailDTO();
+           dataMailDTO.setTo(user.getEmail());
+           dataMailDTO.setSubject(Const.SEND_MAIL_SUBJECT.CLIENT_REGISTER);
+           Map<String, Object> props = new HashMap<>();
+           props.put("name", user.getFirstname()+' '+user.getLastname());
+           props.put("username", user.getUsername());
+           dataMailDTO.setProps(props);
+           mailService.sendHtmlMail(dataMailDTO, Const.SEND_MAIL_SUBJECT.CLIENT_REGISTER);
+       }catch (MessagingException exception){
+           exception.printStackTrace();
+       }
+
+       return "xacthucemail";
+    }
+
     @PostMapping("/update")
     public String updateDiem(@ModelAttribute("diem") diem diem,Model model){
         double diemTongKet=(diem.getDiemChuyenCan()*20+diem.getDiemGiuaKi()*30+diem.getDiemCuoiKi()*50)/100;

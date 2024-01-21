@@ -15,7 +15,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-<div class="contanier">
+<!--th:object="${user}"-->
+<div class="contanier" th:object="${user}">
     <!-- Header -->
     <div class="header-home">
         <div class="header-home-left">
@@ -42,25 +43,27 @@
                 </a>
             </div>
             <div class="header-home__3">
-                <div class="header-home__3--dropdown ">
-                    <div class="header-home__3-div--image"><img th:src="@{/image/avatar.png}" alt="avatar" class="header-home__3-image"></div>
-                    <div  class="header-home__3-div--fullname"><a  href="#" title="" style="margin-right: 5px;" class="header-home-a" >Nguyễn Duy Bách </a>
+                <div class="header-home__3--dropdown">
+                    <div class="header-home__3-div--image"><img th:src="*{avatar != null ? '/avatar/'+avatar : '/image/default-avatar.png'}" alt="avatar" class="header-home__3-image"></div>
+                    <div  class="header-home__3-div--fullname"><a   href="#" title="" style="margin-right: 5px;" class="header-home-a header-home-a--fullname" ><span th:text="*{firstname+' '+lastname}"></span> </a>
                         <i class="fa fa-caret-down user-account-name-caret-down" aria-hidden="true" style="color: #667580;font-size: 10px;"></i></div>
-
                 </div>
                 <div class="header-home__3--dropdown-element">
-                    <a href="" class="nav-right__dangkihocphan-a" style="color: var(--importain--color);">
-                        <div class="header-home__3--dropdown-element--1">Đăng xuất</div>
+                    <a th:href="@{/user/showPageIfUser(username=${#authentication.principal.username})}" class="nav-right__dangkihocphan-a" style="color: var(--importain--color);">
+                        <div class="header-home__3--dropdown-element--1">Thông tin cá nhân</div>
                     </a>
-                    <a href="" class="nav-right__dangkihocphan-a" style="color: var(--importain--color);">
-                        <div class="header-home__3--dropdown-element--1">Đăng xuất</div>
+                    <a href="" class="nav-right__dangkihocphan-a" style="color: var(--importain--color);" th:href="@{/user/UpdateEmail(username=${#authentication.principal.username})}">
+                        <div class="header-home__3--dropdown-element--1">Xác thực email
+                            <span class="header-home__3--dropdown-element--1-span" th:if="${user.trangThaiXacThuc}">Đã xác thực</span>
+                            <span class="header-home__3--dropdown-element--1-span-false" th:if="${!user.trangThaiXacThuc}">Chưa xác thực</span>
+                        </div>
                     </a>
-                    <a href="" class="nav-right__dangkihocphan-a" style="color: var(--importain--color);">
+                    <a href="" class="nav-right__dangkihocphan-a" style="color: var(--importain--color);" >
                         <div class="header-home__3--dropdown-element--1">
                             <form action="#" th:action="@{/logout}" method="POST">
                             <!--                                <div class="head__item-user-inner&#45;&#45;item">-->
                             <!--                                <input type="submit" class="btn btn-info" value="Đăng xuất"/>-->
-                            <input type="submit"  value="Đăng xuất"> </input>
+                            <input type="submit"  value="Đăng xuất" class="input-none"> </input>
                         </form>
                         </div>
                     </a>
@@ -86,7 +89,13 @@
                         </div>
                     </div>
                     <div>
-
+                        <ul >
+                            <li th:each="baiVietList : ${baiVietList">
+                                <span th:text="${baiVietList.title}"></span>
+                                <span th:text="${baiVietList.content}"></span>
+                                <span th:text="${baiVietList.like}"></span>
+                            </li>
+                        </ul>
                     </div>
 
                 </div>
@@ -94,7 +103,7 @@
             </div>
             <div class="nav-right">
                 <div class="nav-right__lich">
-                    <a class="nav-right__dangkihocphan-a" th:href="@{/lich-hoc/showPageLichHocUser}" title="Đăng ký học phần">
+                    <a class="nav-right__dangkihocphan-a" th:href="@{/lich-hoc-user/showPageLichHocUser(username=${#authentication.principal.username})}" title="Đăng ký học phần">
                         <div class="nav-right__lich-hoc">
                             <span>Lịch học trong tuần</span>
                             <div class="nav-right__lich-hoc--element">
@@ -108,7 +117,7 @@
                             <span>Xem chi tiết</span>
                         </div>
                     </a>
-                    <a class="nav-right__dangkihocphan-a" target="_blank"   title="Đăng ký học phần" langid="menusinhvien-15-title">
+                    <a class="nav-right__dangkihocphan-a"   title="Đăng ký học phần" langid="menusinhvien-15-title">
                         <div class="nav-right__lich-thi">
                             <span>Lịch học trong tuần</span>
                             <div class="nav-right__lich-hoc--element">
@@ -124,7 +133,7 @@
                     </a>
                 </div>
                 <div class="nav-right__dangkihocphan">
-                    <a class="nav-right__dangkihocphan-a" target="_blank" th:href="@{/homeUser/showHome(username=${#authentication.principal.username})}" title="Đăng ký học phần" langid="menusinhvien-15-title">
+                    <a class="nav-right__dangkihocphan-a"  th:href="@{/homeUser/showHome(username=${#authentication.principal.username})}" title="Đăng ký học phần" langid="menusinhvien-15-title">
                         <div class="nav-right__dangkihocphan-inner">
                             <div class="icon">
                                 <img th:src="@{/image/dkhp.png}" alt="">
@@ -132,7 +141,7 @@
                             <span lang="menusinhvien-15-vt">Đăng ký học phần</span>
                         </div>
                     </a>
-                    <a class="nav-right__dangkihocphan-a" target="_blank" th:href="@{/diem/showPageDiem(username=${#authentication.principal.username})}" title="Đăng ký học phần" langid="menusinhvien-15-title">
+                    <a class="nav-right__dangkihocphan-a"  th:href="@{/diem-user/showPageDiem(username=${#authentication.principal.username})}" title="Đăng ký học phần" langid="menusinhvien-15-title">
                         <div class="nav-right__dangkihocphan-inner">
                             <div class="icon">
                                 <img th:src="@{/image/ketqua.png}" alt="">
@@ -140,7 +149,7 @@
                             <span lang="menusinhvien-15-vt">Kết quả</span>
                         </div>
                     </a>
-                    <a class="nav-right__dangkihocphan-a" target="_blank" th:href="@{/user/showPageIfUser(username=${#authentication.principal.username})}" title="Đăng ký học phần" langid="menusinhvien-15-title">
+                    <a class="nav-right__dangkihocphan-a"  th:href="@{/user/showPageIfUserUpdate(username=${#authentication.principal.username})}" title="Đăng ký học phần" langid="menusinhvien-15-title">
                         <div class="nav-right__dangkihocphan-inner">
                             <div class="icon">
                                 <img th:src="@{/image/ketqua.png}" alt="">

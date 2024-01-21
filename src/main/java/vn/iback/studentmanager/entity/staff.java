@@ -24,7 +24,7 @@ public class staff {
     private Date dayIntoSchool;
     @Column(name="birthday")
     private Date birthday;
-    @ManyToOne()
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "ma_khoa")
     private khoa maKhoa;
 

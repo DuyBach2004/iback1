@@ -12,7 +12,7 @@ public class ketQuaHocTap {
     @ManyToOne
     @JoinColumn(name = "username")
     private user user;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "id")
     private kyHoc kyHoc;
     @Column(name = "diem_ren_luyen")

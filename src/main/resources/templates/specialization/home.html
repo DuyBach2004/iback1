@@ -82,6 +82,26 @@ Xin chào<b><span sec:authentication="principal.username" ></span></b>
             <input type="submit" value="Choose" class="btn btn-sm "/>
           </form>
         </button>
+        <button class="btn btn-warning" sec:authorize="hasRole('ADMIN')" th:object="${user}" th:if="${user != null}">
+          <form  th:action="@{/user/update-specialization(id=${specialization.specializedCode})}" method="post">
+            <!-- Your form fields here -->
+            <div >
+              <input type="hidden" th:field="*{username}" />
+              <input type="hidden" th:field="*{password}" />
+              <input type="hidden" th:field="*{roles}" />
+              <input type="hidden" th:field="*{studentId}" />
+              <input type="hidden" th:field="*{khoa}" />
+              <input type="hidden" th:field="*{lop}" />
+              <input type="hidden" th:field="*{firstname}" />
+              <input type="hidden" th:field="*{lastname}" />
+              <input type="hidden" th:field="*{location}" />
+              <input type="hidden" th:field="*{specialization}" />
+              <input type="hidden" th:field="*{email}" />
+              <input type="hidden" th:field="*{avatar}" />
+            </div>
+            <input type="submit" value="Choose(user)" class="btn btn-sm "/>
+          </form>
+        </button>
 <!--        <div th:object="${notebook}" th:if="${notebook != null}">-->
 <!--          <button class="btn btn-info" sec:authorize="hasAnyRole('ADMIN','MANAGER')" >-->
 <!--            &lt;!&ndash;                    <a class="btn btn-sm " th:href="@{/class/updateTeacher(TeacherId=${teacher.staff_id})}" >&ndash;&gt;-->
