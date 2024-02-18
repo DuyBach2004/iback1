@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import vn.iback.studentmanager.entity.*;
 import vn.iback.studentmanager.service.StudentIntoNoteBookService;
 import vn.iback.studentmanager.service.Userservice;
@@ -19,9 +16,9 @@ import vn.iback.studentmanager.service.lichHocService.lichHocService;
 import vn.iback.studentmanager.service.nootebookService;
 
 import java.util.List;
-
 @Controller
 @RequestMapping("/homeUser")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class homeUserController {
 
     private vn.iback.studentmanager.service.classService classService;
@@ -52,14 +49,25 @@ public class homeUserController {
     }
     @GetMapping()
     public String showHomeUser(Model model, HttpServletRequest request){
+
         User user1=(User)request.getSession().getAttribute("user");
         user user=userservice.findByUsername(user1.getUsername());
+        System.out.println("Tui da vao day");
         List<baiViet> baiVietList=baiVietService.findAllBaiViet();
         List<binhluan> binhluanList=binhluanService.findAllBinhluan();
         model.addAttribute("baiVietList",baiVietList);
         model.addAttribute("binhluanList",binhluanList);
         model.addAttribute("user",user);
         return "homeUser";
+    }
+    @GetMapping("/user")
+    @ResponseBody
+    public user showHome(Model model, HttpServletRequest request){
+
+        User user1=(User)request.getSession().getAttribute("user");
+        user user=userservice.findByUsername(user1.getUsername());
+
+        return user;
     }
 
 }

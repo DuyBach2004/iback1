@@ -1,22 +1,16 @@
 package vn.iback.studentmanager.Controller.user;
 
 import jakarta.mail.MessagingException;
-import jakarta.servlet.Servlet;
-import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.tomcat.util.http.fileupload.FileItem;
-import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.filter.ServletRequestPathFilter;
 import org.springframework.web.multipart.MultipartFile;
 import vn.iback.studentmanager.dao.RoleRespository;
 import vn.iback.studentmanager.dto.DataMailDTO;
@@ -30,14 +24,9 @@ import vn.iback.studentmanager.service.lopSevice.lopService;
 import vn.iback.studentmanager.service.mailService.MailService;
 import vn.iback.studentmanager.service.phanHoiService.phanHoiService;
 import vn.iback.studentmanager.service.specializationService;
-import vn.iback.studentmanager.service.studentService;
-import vn.iback.studentmanager.service.userBinhLuanService.userBinhLuanService;
-import vn.iback.studentmanager.service.userPhanHoiService.userPhanHoiService;
 import vn.iback.studentmanager.service.userPostService.userPostService;
 import vn.iback.studentmanager.utils.Const;
 
-import javax.sql.rowset.serial.SerialBlob;
-import javax.sql.rowset.serial.SerialException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,36 +35,27 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.sql.Blob;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
-
-@RestController
-@RequestMapping(value = "/user2" )
-@CrossOrigin(origins = "*", allowedHeaders = "*")  //Giup sua loi cros khi goi api
-public class UserController {
+@Controller
+@RequestMapping(value = "/user" )
+public class UserController2 {
     private Userservice userservice;
     private vn.iback.studentmanager.service.studentService studentService;
-    private khoaService khoaService;
-    private lopService lopService;
+    private vn.iback.studentmanager.service.khoaService.khoaService khoaService;
+    private vn.iback.studentmanager.service.lopSevice.lopService lopService;
     private RoleRespository roleRespository;
     private MailService mailService;
     private MailSender mailSender;
-    private specializationService specializationService;
-    private baiVietService baiVietService;
-    private imageService imageService;
-    private binhluanService binhluanService;
-    private phanHoiService phanHoiService;
-    private userPostService userPostService;
-    private userBinhLuanService userBinhLuanService;
-    private userPhanHoiService userPhanHoiService;
+    private vn.iback.studentmanager.service.specializationService specializationService;
+    private vn.iback.studentmanager.service.baiVietService.baiVietService baiVietService;
+    private vn.iback.studentmanager.service.imageService.imageService imageService;
+    private vn.iback.studentmanager.service.binhluanService.binhluanService binhluanService;
+    private vn.iback.studentmanager.service.phanHoiService.phanHoiService phanHoiService;
 
     @Autowired
-    public UserController(Userservice userservice, vn.iback.studentmanager.service.studentService studentService, vn.iback.studentmanager.service.khoaService.khoaService khoaService, vn.iback.studentmanager.service.lopSevice.lopService lopService, RoleRespository roleRespository, MailService mailService, MailSender mailSender, vn.iback.studentmanager.service.specializationService specializationService, vn.iback.studentmanager.service.baiVietService.baiVietService baiVietService, vn.iback.studentmanager.service.imageService.imageService imageService, vn.iback.studentmanager.service.binhluanService.binhluanService binhluanService, vn.iback.studentmanager.service.phanHoiService.phanHoiService phanHoiService, vn.iback.studentmanager.service.userPostService.userPostService userPostService, vn.iback.studentmanager.service.userBinhLuanService.userBinhLuanService userBinhLuanService, vn.iback.studentmanager.service.userPhanHoiService.userPhanHoiService userPhanHoiService) {
+    public UserController2(Userservice userservice, vn.iback.studentmanager.service.studentService studentService, vn.iback.studentmanager.service.khoaService.khoaService khoaService, vn.iback.studentmanager.service.lopSevice.lopService lopService, RoleRespository roleRespository, MailService mailService, MailSender mailSender, vn.iback.studentmanager.service.specializationService specializationService, vn.iback.studentmanager.service.baiVietService.baiVietService baiVietService, vn.iback.studentmanager.service.imageService.imageService imageService, vn.iback.studentmanager.service.binhluanService.binhluanService binhluanService, vn.iback.studentmanager.service.phanHoiService.phanHoiService phanHoiService) {
         this.userservice = userservice;
         this.studentService = studentService;
         this.khoaService = khoaService;
@@ -88,9 +68,6 @@ public class UserController {
         this.imageService = imageService;
         this.binhluanService = binhluanService;
         this.phanHoiService = phanHoiService;
-        this.userPostService = userPostService;
-        this.userBinhLuanService = userBinhLuanService;
-        this.userPhanHoiService = userPhanHoiService;
     }
 
     @GetMapping("/update")
@@ -100,189 +77,7 @@ public class UserController {
         model.addAttribute("student",student);
         return "user/update";
     }
-    @RequestMapping(value = "/post-updateLike", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<String> updateLikePost(@RequestBody Map<String, Object> payload){
-        System.out.println(payload.get("id"));
-        String username = (String) payload.get("username");
-        user user=userservice.findByUsername(username);
-        int id= (int) payload.get("id");
-        System.out.println("Taiiiiiiiiiii xiu "+payload);
-        baiViet baiViet=baiVietService.findClassByid(id);
-        int soluonglike= baiViet.getLike() +1;
-        System.out.println(soluonglike);
-        baiViet.setLike(soluonglike);
-        baiVietService.update(baiViet);
-        int idUserPost= (int) payload.get("idUserPost");
 
-        userPost userPost= new userPost();
-        userPost.setUser(user);
-        userPost.setBaiViet(baiViet);
-        userPost.setId(idUserPost);
-        userPost.setTrangThaiLike(true);
-        userPostService.save(userPost);
-
-
-
-        return new ResponseEntity<>("Post created successfully", HttpStatus.CREATED);
-    }
-    @RequestMapping(value = "/post-updateLike2", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<String> updateLikePost2(@RequestBody Map<String, Object> payload){
-        System.out.println(payload.get("id"));
-        String username = (String) payload.get("username");
-        int id= (int) payload.get("id");
-        System.out.println("Taiiiiiiiiiii xiu "+payload);
-        baiViet baiViet=baiVietService.findClassByid(id);
-        int soluonglike= baiViet.getLike() -1;
-        System.out.println(soluonglike);
-        baiViet.setLike(soluonglike);
-        baiVietService.update(baiViet);
-        int idUserPost= (int) payload.get("idUserPost");
-
-//        userPostService.deleteById(idUserPost);
-        userPost userPost= userPostService.findById(idUserPost);
-        userPost.setTrangThaiLike(false);
-        userPostService.update(userPost);
-        userPostService.deleteById(idUserPost);
-        return new ResponseEntity<>("Post created successfully", HttpStatus.CREATED);
-    }
-    @RequestMapping(value = "/cmt-CancelLikeApi", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<String> cmtCancelLikeApi(@RequestBody Map<String, Object> payload){
-        System.out.println(payload);
-        int id= (int) payload.get("id");
-        int userCmtId= (int) payload.get("userCmtId");
-        binhluan binhluan=binhluanService.findClassByid(id);
-        int likebinhluan=binhluan.getLike()-1;
-        binhluan.setLike(likebinhluan);
-        binhluanService.update(binhluan);
-        userBinhLuanService.deleteById(userCmtId);
-
-        return new ResponseEntity<>("Post created successfully", HttpStatus.CREATED);
-    }
-
-    //cmt-updateLike
-    @RequestMapping(value = "/cmt-updateLike", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<String> updateLikeCmt(@RequestBody Map<String, Object> payload){
-        System.out.println(payload);
-        int likecmt= (int) payload.get("id");
-        binhluan binhluan=binhluanService.findClassByid(likecmt);
-        int like=binhluan.getLike() +1;
-        binhluan.setLike(like);
-        binhluanService.update(binhluan);
-        String username = (String) payload.get("username");
-        user user=userservice.findByUsername(username);
-
-        int userCmtId= (int) payload.get("userCmtId");
-        userBinhLuan userBinhLuan= new userBinhLuan();
-        userBinhLuan.setId(userCmtId);
-        userBinhLuan.setBinhluan(binhluan);
-        userBinhLuan.setUser(user);
-        userBinhLuanService.save(userBinhLuan);
-        return new ResponseEntity<>("Post created successfully", HttpStatus.CREATED);
-    }
-
-    @RequestMapping(value = "/post-createBinhLuan", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<String> postCreateBinhLuan(@RequestBody Map<String, Object> payload){
-        int idBaiViet= (int) payload.get("id");
-        String timeString = (String) payload.get("time");
-        System.out.println("bay gio la" + timeString);
-
-        Timestamp timestamp = Timestamp.valueOf(timeString);
-
-        baiViet baiViet= baiVietService.findClassByid(idBaiViet);
-        String content= (String) payload.get("data");
-        String username= (String) payload.get("username");
-        user user=userservice.findByUsername(username);
-
-        binhluan binhluan=new binhluan();
-        binhluan.setContent(content);
-        binhluan.setThoigiandangbai(timestamp);
-        binhluan.setBaiViet(baiViet);
-        binhluan.setUser(user);
-        binhluanService.save(binhluan);
-        return new ResponseEntity<>("Post created successfully", HttpStatus.CREATED);
-    }
-    @RequestMapping(value = "/binhluan-createPhanhoi", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<String> postCreatePhanHoi(@RequestBody Map<String, Object> payload){
-        int idBinhLuan=(int) payload.get("id");
-        binhluan binhluan=binhluanService.findClassByid(idBinhLuan);
-        String timeString = (String) payload.get("time");
-        Timestamp timestamp = Timestamp.valueOf(timeString);
-        String content= (String) payload.get("data");
-        String username= (String) payload.get("username");
-        user user=userservice.findByUsername(username);
-
-        phanHoi phanHoi= new phanHoi();
-        phanHoi.setUser(user);
-        phanHoi.setBinhluan(binhluan);
-        phanHoi.setContent(content);
-        phanHoi.setThoigianphanhoi(timestamp);
-        phanHoiService.save(phanHoi);
-        System.out.println(payload);
-        return new ResponseEntity<>("Post created successfully", HttpStatus.CREATED);
-    }
-
-//    @PostMapping("/create-post") http://localhost:8080/user/binhluan-createPhanhoi
-    @RequestMapping(value = "/create-post", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<String> createPost(@RequestBody Map<String, Object> payload) {
-        String title = (String) payload.get("title");
-        String username = (String) payload.get("username");
-        user user=userservice.findByUsername(username);
-
-        String timeString = (String) payload.get("time");
-
-        System.out.println("bay gio la" + timeString);
-
-        System.out.println("bay gio laaaaaaaaa------------" + payload);
-
-        Timestamp timestamp = Timestamp.valueOf(timeString);
-
-        List<String> imageStrings = (List<String>) payload.get("images");
-        System.out.println(imageStrings);
-        List<String> imageBlobs = new ArrayList<>();
-        String imageBlob = null;
-        for (String imageString : imageStrings) {
-            byte[] imageBytes = imageString.getBytes(StandardCharsets.UTF_8);
-            imageBlob = imageString;
-//            try {
-////                imageBlob = new SerialBlob(imageBytes);
-//                imageBlob = imageString;
-//            } catch (SQLException exception) {
-//                throw new RuntimeException(exception);
-//            }
-            imageBlobs.add(imageString);
-        }
-//        System.out.println(imageBlobs);
-        System.out.println("hello");
-        baiViet baiViet=new baiViet();
-        baiViet.setContent(title);
-        baiViet.setUser(user);
-        baiViet.setThoigianbinhluan(timestamp);
-        baiViet.setDislike(0);
-        baiViet.setImage(imageBlob);
-        baiViet.setHaha(0);
-        baiViet.setLike(0);
-        baiViet.setTim(0);
-        baiVietService.save(baiViet);
-
-        for (String image : imageBlobs) {
-            System.out.println("Processing image...");
-            vn.iback.studentmanager.entity.image image1=new image();
-            image1.setPath(image);
-            image1.setBaiViet(baiViet);
-            imageService.update(image1);
-        }
-
-
-        // After processing the data, you can return a response:
-        return new ResponseEntity<>("Post created successfully", HttpStatus.CREATED);
-    }
     @PostMapping("/update-if")
     public String updateInfor(@ModelAttribute("user") user user, Model model){
         userservice.update(user);
@@ -317,18 +112,7 @@ public class UserController {
         model.addAttribute("userList",userList);
         return "user/home";
     }
-    @GetMapping("/showUserPost")
-    public List<userPost> showUserPost(Model model){
-        List<userPost> userPostList=userPostService.findAll();
-        return userPostList;
-    }
-    @GetMapping("/showUserComment")
-    public List<userBinhLuan> showUserBinhLuan(Model model){
-        List<userBinhLuan> userBinhLuans=userBinhLuanService.findAll();
-        return userBinhLuans;
-    }
-
-//    @RequestMapping(value = "/show", method = RequestMethod.GET)
+    //    @RequestMapping(value = "/show", method = RequestMethod.GET)
 //    @ResponseBody
     @GetMapping("/show")
     public List<baiViet> showBaiViet(Model model){
@@ -336,6 +120,8 @@ public class UserController {
         System.out.println(baiVietList);
         return baiVietList;
     }
+
+
     @GetMapping("/showBinhLuan")
     public  List<binhluan> showBinhLuan(Model model){
         System.out.println("HELLO");
@@ -343,8 +129,8 @@ public class UserController {
         List<binhluan> list=new ArrayList<>();
         List<binhluan> binhluanList=new ArrayList<>();
         for (baiViet baiViet:baiVietList){
-           binhluanList=binhluanService.findAllBinhluanOfBaiViet(baiViet);
-           list.addAll(binhluanList);
+            binhluanList=binhluanService.findAllBinhluanOfBaiViet(baiViet);
+            list.addAll(binhluanList);
 
         }
         return  list;
@@ -358,7 +144,7 @@ public class UserController {
             phanHoiList=phanHoiService.findAllPhanHoiOfBinhLuan(binhluan);
             list.addAll(phanHoiList);
         }
-        System.out.println("SOnggggggggggggggggggggg"+list);
+
         return list;
     }
 
@@ -458,9 +244,9 @@ public class UserController {
 
     @PostMapping("/xacthuc")
     public String xacthuc(@RequestParam("username") String username ,Model model)throws MessagingException {
-            user user=userservice.findByUsername(username);
-            Random random=new Random();
-             Random rd= new Random();
+        user user=userservice.findByUsername(username);
+        Random random=new Random();
+        Random rd= new Random();
         String s1=rd.nextInt(10)+"";
         String s2=rd.nextInt(10)+"";
         String s3=rd.nextInt(10)+"";
@@ -469,30 +255,30 @@ public class UserController {
         String s6=rd.nextInt(10)+"";
 
         String s= s1+s2+s2+s4+s5+s6;
-            String songaunhien=s;
-            Date toDaysDay= new Date(new java.util.Date().getMinutes());
-            Calendar c = Calendar.getInstance();
-            c.setTime(toDaysDay);
-            c.add(Calendar.MILLISECOND, 1);
-            Date thoiGianHieuLucXacThuc = new Date(c.getTimeInMillis());
+        String songaunhien=s;
+        Date toDaysDay= new Date(new java.util.Date().getMinutes());
+        Calendar c = Calendar.getInstance();
+        c.setTime(toDaysDay);
+        c.add(Calendar.MILLISECOND, 1);
+        Date thoiGianHieuLucXacThuc = new Date(c.getTimeInMillis());
 
-            boolean trangThaiXacThuc=false;
-            user.setMaXacThuc(songaunhien);
-            user.setThoiGianHieuLucCuaMaXacThuc(thoiGianHieuLucXacThuc);
-            userservice.update(user);
-            DataMailDTO dataMailDTO=new DataMailDTO();
-            dataMailDTO.setTo(user.getEmail());
-            dataMailDTO.setSubject("Mã xác thực tài khoản hệ thống iBack");
-            Map<String, Object> props = new HashMap<>();
-            props.put("name", user.getFirstname()+' '+user.getLastname());
-            props.put("username", user.getUsername());
-            props.put("songaunhien", songaunhien);
-            props.put("avatar", user.getAvatar());
-            dataMailDTO.setProps(props);
-            mailService.sendHtmlMail(dataMailDTO, Const.SEND_MAIL_SUBJECT.CLIENT_REGISTER);
+        boolean trangThaiXacThuc=false;
+        user.setMaXacThuc(songaunhien);
+        user.setThoiGianHieuLucCuaMaXacThuc(thoiGianHieuLucXacThuc);
+        userservice.update(user);
+        DataMailDTO dataMailDTO=new DataMailDTO();
+        dataMailDTO.setTo(user.getEmail());
+        dataMailDTO.setSubject("Mã xác thực tài khoản hệ thống iBack");
+        Map<String, Object> props = new HashMap<>();
+        props.put("name", user.getFirstname()+' '+user.getLastname());
+        props.put("username", user.getUsername());
+        props.put("songaunhien", songaunhien);
+        props.put("avatar", user.getAvatar());
+        dataMailDTO.setProps(props);
+        mailService.sendHtmlMail(dataMailDTO, Const.SEND_MAIL_SUBJECT.CLIENT_REGISTER);
 //            sendEmail("ibackcenter@gmail.com",user.getEmail(),Const.SEND_MAIL_SUBJECT.CLIENT_REGISTER,"hello");
-            model.addAttribute("user",user);
-            return "user/nhapmaxacthuc";
+        model.addAttribute("user",user);
+        return "user/nhapmaxacthuc";
     }
     public void sendEmail(String from,String to,String subject,String content){
         SimpleMailMessage mailMessage=new SimpleMailMessage();
@@ -505,7 +291,7 @@ public class UserController {
     }
 
     @PostMapping("/checkxacthuc")
-    public String checkxacthuc(@RequestParam("username") String username,HttpServletRequest request,Model model){
+    public String checkxacthuc(@RequestParam("username") String username, HttpServletRequest request, Model model){
         String maxacthuc=request.getParameter("maxacthuc");
         user user=userservice.findByUsername(username);
         if (user.getMaXacThuc().equals(maxacthuc)){

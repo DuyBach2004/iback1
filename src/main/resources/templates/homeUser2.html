@@ -61,10 +61,10 @@
                     <a href="" class="nav-right__dangkihocphan-a" style="color: var(--importain--color);" >
                         <div class="header-home__3--dropdown-element--1">
                             <form action="#" th:action="@{/logout}" method="POST">
-                                <!--                                <div class="head__item-user-inner&#45;&#45;item">-->
-                                <!--                                <input type="submit" class="btn btn-info" value="Đăng xuất"/>-->
-                                <input type="submit"  value="Đăng xuất" class="input-none"> </input>
-                            </form>
+                            <!--                                <div class="head__item-user-inner&#45;&#45;item">-->
+                            <!--                                <input type="submit" class="btn btn-info" value="Đăng xuất"/>-->
+                            <input type="submit"  value="Đăng xuất" class="input-none"> </input>
+                        </form>
                         </div>
                     </a>
 
@@ -81,52 +81,24 @@
                     <div class="nav-left-container-header">
                         <div class="nav-left-container-header-element">
                             <div class="nav-left-container-header__text">iuh social network</div>
-
-                            <div class="nav-left-container-header__upload" id="uploadbaiviet">
-                                Đăng bài viết
-                            </div>
-
+                            <a href="" class="nav-right__dangkihocphan-a">
+                                <div class="nav-left-container-header__upload">
+                                    Đăng bài viết
+                                </div>
+                            </a>
                         </div>
                     </div>
-                    <div class="nav-left-container-header-nav" id="conainer">
-
-
-
-
-
+                    <div>
+                        <ul >
+                            <li th:each="baiViet: ${baiVietList}">
+                                <span th:text="${baiViet.user}"></span>
+                                <span th:text="${baiViet.title}"></span>
+                                <span th:text="${baiViet.content}"></span>
+                                <span th:text="${baiViet.like}"></span>
+                                <span th:text="${baiViet.haha}"></span>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="form_dangbai" id="formupload" style="display: none;">
-                        <h1 class="taobaiviet">Tạo bài viết <span id="dongbaiviet"><i
-                                class="fa-regular fa-circle-xmark"></i></span></h1>
-
-                        <div class="nav-left-container-header-nav-container__header">
-                            <div class="nav-left-container-header-nav-container__header-div--image"><img
-                                    th:src="*{avatar != null ? '/avatar/'+avatar : '/image/default-avatar.png'}" alt=""
-                                    class="nav-left-container-header-nav-container__header-image"></div>
-                            <div class="nav-left-container-header-nav-container__header-div--right">
-                                <h1 class="nav-left-container-header-nav-container__header-name" th:text="*{firstname+' '+lastname}">
-
-                                </h1>
-                            </div>
-                        </div>
-                        <textarea placeholder="Bạn đang nghĩ gì thế?" class="bandangnghigi" id="bandangnghigi"
-                                  rows="2"></textarea>
-                        <input type="file" id="chonanh" class="chonanhs">
-                        <label for="chonanh" class="chonanhslable"><img th:src="@{/image/anh.png}" alt=""
-                                                                        class="chonanhsimage"></label>
-
-                        <div class="chon-anh" id="chon-anh">
-                            <!-- <img src="/image/avatar.png" alt="" class="showanhdachon"> -->
-
-                        </div>
-
-                        <div class="button-dangbaiviet">
-                            <button id="create-baiviet">
-                                Đăng
-                            </button>
-                        </div>
-                    </div>
-
 
                 </div>
 
@@ -195,15 +167,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-<script th:src="@{/js/dangbaiviet.js}" th:inline="javascript" th:object="${user}">
-    var val = "${user}";
-    console.log(user);
-</script>
-<script th:src="@{/js/main.js}" th:inline="javascript">
-    var username = /*[[${user.username}]]*/ 'default';
-        console.log(username);
-</script>
-<script >
+<script>
     document.addEventListener("DOMContentLoaded", function () {
     var headerHome = document.querySelector(".header-home__3");
 

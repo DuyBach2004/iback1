@@ -3,6 +3,7 @@ package vn.iback.studentmanager.entity;
 import jakarta.persistence.*;
 
 import java.sql.Blob;
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
@@ -18,7 +19,7 @@ public class binhluan{
     private String content;
     @Column(name = "image")
     private Blob image;
-    @Column(name = "like")
+    @Column(name = "like1")
     private int like;
     @Column(name = "tim")
     private int tim;
@@ -32,9 +33,11 @@ public class binhluan{
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "username")
     private user user;
+    @Column(name = "thoigiandangbai")
+    private Timestamp thoigiandangbai;
 
 
-    public binhluan(int id, Date day, String content, Blob image, int like, int tim, int haha, int dislike, vn.iback.studentmanager.entity.user user, vn.iback.studentmanager.entity.baiViet baiViet) {
+    public binhluan(int id, Date day, String content, Blob image, int like, int tim, int haha, int dislike, vn.iback.studentmanager.entity.baiViet baiViet, vn.iback.studentmanager.entity.user user, Timestamp thoigiandangbai) {
         this.id = id;
         this.day = day;
         this.content = content;
@@ -43,8 +46,9 @@ public class binhluan{
         this.tim = tim;
         this.haha = haha;
         this.dislike = dislike;
-        this.user = user;
         this.baiViet = baiViet;
+        this.user = user;
+        this.thoigiandangbai = thoigiandangbai;
     }
 
     public binhluan() {
@@ -128,5 +132,13 @@ public class binhluan{
 
     public void setBaiViet(vn.iback.studentmanager.entity.baiViet baiViet) {
         this.baiViet = baiViet;
+    }
+
+    public Timestamp getThoigiandangbai() {
+        return thoigiandangbai;
+    }
+
+    public void setThoigiandangbai(Timestamp thoigiandangbai) {
+        this.thoigiandangbai = thoigiandangbai;
     }
 }

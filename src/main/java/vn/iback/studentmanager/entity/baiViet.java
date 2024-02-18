@@ -3,6 +3,7 @@ package vn.iback.studentmanager.entity;
 import jakarta.persistence.*;
 
 import java.sql.Blob;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "bai_viet")
@@ -16,10 +17,10 @@ public class baiViet {
     @Column(name="content")
     private String content;
     @Column(name = "image")
-    private Blob image;
-    @Column(name = "like")
+    private String image;
+    @Column(name = "like1")
     private int like;
-    @Column(name = "tim")
+    @Column(name = "tim1")
     private int tim;
     @Column(name = "haha")
     private int haha;
@@ -28,8 +29,10 @@ public class baiViet {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "username")
     private user user;
+    @Column(name = "thoigianbinhluan")
+    private Timestamp thoigianbinhluan;
 
-    public baiViet(int id, String title, String content, Blob image, int like, int tim, int haha, int dislike, vn.iback.studentmanager.entity.user user) {
+    public baiViet(int id, String title, String content, String image, int like, int tim, int haha, int dislike, vn.iback.studentmanager.entity.user user, Timestamp thoigianbinhluan) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -39,6 +42,7 @@ public class baiViet {
         this.haha = haha;
         this.dislike = dislike;
         this.user = user;
+        this.thoigianbinhluan = thoigianbinhluan;
     }
 
     public baiViet() {
@@ -100,11 +104,11 @@ public class baiViet {
         this.content = content;
     }
 
-    public Blob getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(Blob image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -114,5 +118,13 @@ public class baiViet {
 
     public void setUser(vn.iback.studentmanager.entity.user user) {
         this.user = user;
+    }
+
+    public Timestamp getThoigianbinhluan() {
+        return thoigianbinhluan;
+    }
+
+    public void setThoigianbinhluan(Timestamp thoigianbinhluan) {
+        this.thoigianbinhluan = thoigianbinhluan;
     }
 }

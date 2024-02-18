@@ -1,13 +1,19 @@
 package vn.iback.studentmanager.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,15 +44,24 @@ public class SecurityConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/avatar/**")
                 .addResourceLocations("file:/D:/Java/studentmanager/avatar/");
     }
+    //vô hiệu hóa SerializationFeature.FAIL_ON_EMPTY_BEANS
+    @Bean
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter(mapper);
+        return converter;
+    }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.authorizeHttpRequests(
                 configurer->configurer
                         .requestMatchers("/css/**","/image/**").permitAll()
+                        .requestMatchers("/user/**").permitAll()
                         .requestMatchers("/static/**").permitAll()
                         .requestMatchers("/register/**").permitAll()
                         .requestMatchers("/home/**").authenticated()
-                        .requestMatchers("/homeUser/**").hasRole("USER")
+//                        .requestMatchers("/homeUser/**").hasRole("USER")
                         .requestMatchers("/home/**").hasRole("ADMIN")
                         .requestMatchers("/lich-hoc-user/**").hasRole("USER")
                         .requestMatchers("/lich-hoc/**").hasRole("ADMIN")
@@ -63,8 +78,10 @@ public class SecurityConfig implements WebMvcConfigurer {
                         .requestMatchers("/subject/**").hasRole("ADMIN")
                         .requestMatchers("/teacher/**").hasRole("ADMIN")
                         .requestMatchers("/thoi-gian-hoc/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-        ).formLogin(
+                        .anyRequest().permitAll()
+//                        .anyRequest().authenticated()
+        )
+                .formLogin(
                 form->form.loginPage("/showLoginPage")
 //                        .loginPage("/showLoginPage")
 //                        .loginProcessingUrl("/authenticateTheUser")
@@ -101,7 +118,8 @@ public class SecurityConfig implements WebMvcConfigurer {
         ).exceptionHandling(
                 configurer->configurer.accessDeniedPage("/showPage403")
         );
-
+        http.httpBasic(Customizer.withDefaults());
+        http.csrf(csrf->csrf.disable());
         return http.build();
     }
 

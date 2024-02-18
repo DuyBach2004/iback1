@@ -95,6 +95,7 @@ public class RegisterController {
         Collection<roles> roles=new ArrayList<>();
         roles.add(defautRole);
         user.setRoles(roles);
+        user.setTrangThaiXacThuc(false);
         userservice.save(user);
 
         //thong bao thanh cong
